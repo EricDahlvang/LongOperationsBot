@@ -12,6 +12,14 @@ using Microsoft.BotBuilderSamples.Dialogs;
 
 namespace Microsoft.BotBuilderSamples
 {
+    /// <summary>
+    /// This dialog demonstrates how to use the <see cref="LongOperationPrompt"/>.
+    /// 
+    /// The user is provided an option to perform any of three long operations.
+    /// Their choice is then sent to the <see cref="LongOperationPrompt"/>.
+    /// When the prompt completes, the result is received as an Activity in the
+    /// final Waterfall step.
+    /// </summary>
     public class LongOperationDialog : ComponentDialog
     {
         public LongOperationDialog(AzureQueuesService queueService)
@@ -55,6 +63,7 @@ namespace Microsoft.BotBuilderSamples
             stepContext.Values["longOperationOption"] = value;
 
             var prompt = MessageFactory.Text("...one moment please....");
+            // The reprompt will be shown if the user messages the bot while the long operation is being performed.
             var retryPrompt = MessageFactory.Text($"Still performing the long operation: {value} ... (is the Azure Function executing from the queue?)");
             return await stepContext.PromptAsync(nameof(LongOperationPrompt),
                                                         new LongOperationPromptOptions

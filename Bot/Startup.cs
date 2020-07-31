@@ -28,6 +28,7 @@ namespace Microsoft.BotBuilderSamples
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
+            // In production, this should be a persistent storage provider.bot
             services.AddSingleton<IStorage>(new MemoryStorage());
 
             // Create the Conversation state. (Used by the Dialog system itself.)
@@ -36,7 +37,7 @@ namespace Microsoft.BotBuilderSamples
             // The Dialog that will be run by the bot.
             services.AddSingleton<LongOperationDialog>();
 
-            // Service used to enqueue into Azure.Storage.Queues
+            // Service used to queue into Azure.Storage.Queues
             services.AddSingleton<AzureQueuesService>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.

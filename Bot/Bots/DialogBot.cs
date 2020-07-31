@@ -28,6 +28,14 @@ namespace Microsoft.BotBuilderSamples
         protected readonly ILogger Logger;
         private readonly string _botId;
 
+        /// <summary>
+        /// Create an instance of <see cref="DialogBot{T}"/>.
+        /// </summary>
+        /// <param name="configuration"><see cref="IConfiguration"/> used to retrieve MicrosoftAppId
+        /// which is used in ContinueConversationAsync.</param>
+        /// <param name="conversationState"><see cref="ConversationState"/> used to store the DialogStack.</param>
+        /// <param name="dialog">The RootDialog for this bot.</param>
+        /// <param name="logger"><see cref="ILogger"/> to use.</param>
         public DialogBot(IConfiguration configuration, ConversationState conversationState, T dialog, ILogger<DialogBot<T>> logger)
         {
             _botId = configuration["MicrosoftAppId"] ?? Guid.NewGuid().ToString();
@@ -47,16 +55,19 @@ namespace Microsoft.BotBuilderSamples
 
         protected override async Task OnEventActivityAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
         {
-            // 'LongOperationResponse' set when the Azure Function creates the activity to reply with after processing 
+            // The event from the Azure Function will have a name of 'LongOperationResponse' 
             if (turnContext.Activity.ChannelId == Channels.Directline && turnContext.Activity.Name == "LongOperationResponse")
             {
                 // The response will have the original conversation reference activity in the .Value
+                // This original activity was sent to the Azure Function via Azure.Storage.Queues in AzureQueuesService.cs.
                 var continueConversationActivity = (turnContext.Activity.Value as JObject)?.ToObject<Activity>();
                 await turnContext.Adapter.ContinueConversationAsync(_botId, continueConversationActivity.GetConversationReference(), async (context, cancellation) =>
                 {                    
                     Logger.LogInformation("Running dialog with Activity from LongOperationResponse.");
 
-                    // ContinueConversationAsync resets the .Value of the event being continued, so change it back before running the dialog stack.
+                    // ContinueConversationAsync resets the .Value of the event being continued to Null, 
+                    //so change it back before running the dialog stack. (The .Value contains the response 
+                    //from the Azure Function)
                     context.Activity.Value = continueConversationActivity.Value;
                     await Dialog.RunAsync(context, DialogState, cancellationToken);
 

@@ -13,6 +13,7 @@ public static async Task Run(string queueItem, ILogger log)
 
     JsonSerializerSettings jsonSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore };
     var originalActivity =  JsonConvert.DeserializeObject<Activity>(queueItem, jsonSettings);
+
     // Perform long operation here....
     System.Threading.Thread.Sleep(TimeSpan.FromSeconds(15));
 
@@ -27,11 +28,14 @@ public static async Task Run(string queueItem, ILogger log)
     }
 
     originalActivity.Value = "LongOperationComplete: " + originalActivity.Value;
+
+    // Create the 'event' activity which will hold the original activity in the .Value.
     var responseActivity =  new Activity("event");
     responseActivity.Value = originalActivity;
     responseActivity.Name = "LongOperationResponse";
     responseActivity.From = new ChannelAccount("GenerateReport", "AzureFunction");
 
+    // Lastly, send the 'event' to the bot using the DirectLineClient.
     var directLineSecret = Environment.GetEnvironmentVariable("DirectLineSecret");            
     using(DirectLineClient client = new DirectLineClient(directLineSecret)) 
     {

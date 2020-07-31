@@ -15,11 +15,19 @@ Modified https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/csh
 
 - Create an Azure Function App, with a [QueueTrigger function](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue-trigger)  
 
-- Add code the function (run.csx, function.proj, function.json)
+- Add code for the function (run.csx, function.proj, function.json)
 
-- Create an Azure [Web App Bot](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart) Publish code from LongOperationsBot
+- Create an Azure [Web App Bot](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart) 
+
+- Enable the Direct Line Channel.
+
+- Setup ngrok, and change the Messaging Endpoint for local development and testing.  [see: Debugging with Ngrok](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-debug-channel-ngrok)
+
+- Publish code from LongOperationsBot (if not locally debugging).
 
 - Ensure the `Direct Line` channel is enabled.
+
+- Add app settings for Web App Bot and the Azure Function.
 
 ## Sample Projects Explained
 
@@ -44,3 +52,17 @@ The following App Settings should be configured in the Azure Function and the We
 - QueueStorageConnection: your storage connection string
 
 The Azure function also requires a `DirectLineSecret` app setting.
+
+## Testing the bot using Bot Framework Emulator
+
+- Note: an external ngrok connection is required, because the Azure Function needs to be able to call back to the bot.
+
+[Bot Framework Emulator](https://github.com/microsoft/botframework-emulator) is a desktop application that allows bot developers to test and debug their bots on localhost or running remotely through a tunnel.
+
+- Install the Bot Framework Emulator from [here](https://github.com/Microsoft/BotFramework-Emulator/releases)
+
+### Connect to the bot using Bot Framework Emulator
+
+- Launch Bot Framework Emulator
+- File -> Open Bot
+- Enter a Bot URL of `http://localhost:3978/api/messages`
