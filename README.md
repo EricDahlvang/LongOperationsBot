@@ -1,7 +1,5 @@
 # Long Operations Bot
 
-Modified https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/csharp_dotnetcore/05.multi-turn-prompt
-
 ## Prerequisites
 
 - [.NET Core SDK](https://dotnet.microsoft.com/download) (version 3.1)
