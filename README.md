@@ -1,3 +1,6 @@
+@ Documentation reference:
+https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-long-operations-guidance
+
 # Long Operations Bot
 
 ## Prerequisites
